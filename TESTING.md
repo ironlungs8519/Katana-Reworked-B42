@@ -11,3 +11,9 @@ SP first, then host-and-join, then dedicated server (2 clients).
 9. Repair/sharpen a tempered blade: values are not rolled back upward/downward incorrectly.
 10. Verify anim `BlowTorch` exists; if not, pick a vanilla welding anim.
 11. Throw/drop/pick up katana: item ID stable and tempering retained.
+
+## Compatibility: Preventative Maintenance 2 (CakeDayZ)
+12. Repair a tempered/equipped katana with duct tape: condition goes UP and stays up (not rolled back).
+13. Provoke a PM2 fumble (-10% condition) and a file/whetstone sharpen (-1 condition chance): the loss must stick, including after unequip/re-equip.
+14. Swing at zombies after a PM2 repair: tempered wear is still prevented; untempered wear is still normal.
+15. Hattori blade: PM2 repairs clamp to its doubled max condition.

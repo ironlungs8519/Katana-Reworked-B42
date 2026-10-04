@@ -63,8 +63,15 @@ local function makeHattori(player, item)
     if player then sync(player, item) end
 end
 
+local lastEq = {}
 local function guard(player)
     local item = player:getPrimaryHandItem()
+    -- snapshots are only valid while the item stays equipped: repairs/sharpening done from the inventory
+    -- (vanilla or Preventative Maintenance 2) must never be mistaken for combat wear and "refunded"
+    local who = player:getUsername()
+    local curId = item and KT.key(item) or nil
+    if lastEq[who] and lastEq[who] ~= curId then snaps[lastEq[who]] = nil end
+    lastEq[who] = curId
     if item and KT.isHattori(item) and not applied[KT.key(item)] then -- stats are re-applied each session
         applied[KT.key(item)] = true
         KT.applyHattoriStats(item); sync(player, item)
@@ -77,8 +84,12 @@ local function guard(player)
     local pct = KT.isTarget(item) and ((e and e.untilT and e.untilT > now) and KT.opt("HardenedWearPercent", 0) or KT.opt("BaseWearPercent", 100)) or 100
     local sharpPct = immune and 0 or pct
 
-    local cur = { cond = item:getCondition(), sharp = item:hasSharpness() and item:getSharpness() or nil, head = item:hasHeadCondition() and item:getHeadCondition() or nil }
+    -- another mod's repair just happened while equipped (Preventative Maintenance 2 counts every repair): rebaseline
+    local st = item:getModData().PMTwo_stats
+    local rc = st and st.true_repair_count or 0
+    local cur = { rc = rc, cond = item:getCondition(), sharp = item:hasSharpness() and item:getSharpness() or nil, head = item:hasHeadCondition() and item:getHeadCondition() or nil }
     local snap = snaps[id]
+    if snap and snap.rc ~= rc then snap = nil end
     if snap and (pct < 100 or sharpPct < 100) then
         local changed = false
         if cur.sharp and snap.sharp and cur.sharp < snap.sharp then
