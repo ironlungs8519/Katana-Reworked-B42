@@ -3,6 +3,21 @@ require "ISUI/ISModalDialog"
 
 KT.cache = KT.cache or {}
 
+-- one torch sound per character at a time: never overlaps itself (local or relayed)
+local sounds = {}
+function KT.stopTorch(p)
+    local h = sounds[p]
+    if h then pcall(function() p:getEmitter():stopSound(h) end) sounds[p] = nil end
+end
+function KT.playTorch(p)
+    KT.stopTorch(p)
+    sounds[p] = p:getEmitter():playSound("KT_TorchTemper")
+    return sounds[p]
+end
+
+-- result message: shown in the draggable panel for MSG_MS (default 4.5s), halo if panel is hidden
+KT.MSG_MS = 4500
+
 local function findTorch(player)
     local items = player:getInventory():getAllTypeRecurse("BlowTorch")
     local units = KT.opt("TorchUnitsPerUse", 1)
@@ -69,7 +84,9 @@ end)
 
 local function say(player, key, good)
     local txt = getText("UI_KT_" .. key)
-    if HaloTextHelper and (good and HaloTextHelper.addGoodText or HaloTextHelper.addBadText) then
+    if KTHud and KTHud.instance and not KTHud.hidden() then
+        KT.msg = { txt = txt, good = good, untilMs = getTimestampMs() + KT.MSG_MS }
+    elseif HaloTextHelper and (good and HaloTextHelper.addGoodText or HaloTextHelper.addBadText) then
         (good and HaloTextHelper.addGoodText or HaloTextHelper.addBadText)(player, txt)
     else
         player:Say(txt)
@@ -87,7 +104,7 @@ Events.OnServerCommand.Add(function(module, command, args)
         if args.pid == me:getOnlineID() then return end
         local p = getPlayerByOnlineID(args.pid)
         if p and p:DistTo(me) < 25 then
-            p:getEmitter():playSound("KT_TorchTemper")
+            KT.playTorch(p)
             KTSparks.add(p, 300)
         end
     end

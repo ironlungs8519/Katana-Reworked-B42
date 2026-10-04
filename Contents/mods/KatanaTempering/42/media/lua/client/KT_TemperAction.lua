@@ -11,13 +11,13 @@ end
 function KTTemperAction:start()
     self:setActionAnim("BlowTorch")
     self:setOverrideHandModels(self.torch, nil)
-    self.sound = self.character:getEmitter():playSound("KT_TorchTemper")
+    self.sound = KT.playTorch(self.character)
     KTSparks.add(self.character, self.maxTime)
     sendClientCommand(self.character, KT.MODULE, "fx", {})
 end
 
 function KTTemperAction:stop()
-    if self.sound then self.character:getEmitter():stopSound(self.sound) end
+    KT.stopTorch(self.character)
     ISBaseTimedAction.stop(self)
 end
 

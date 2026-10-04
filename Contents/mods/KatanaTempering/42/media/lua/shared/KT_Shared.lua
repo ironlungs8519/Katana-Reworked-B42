@@ -10,15 +10,28 @@ end
 
 function KT.now() return getGameTime():getWorldAgeHours() end
 
+-- Items = "Base.Katana;Mod.OtherKatana=45" : optional "=minutes" overrides the duration for that type
 local cacheKey, cacheSet
-function KT.isTarget(item)
-    if not item or not instanceof(item, "HandWeapon") then return false end
+local function targets()
     local raw = KT.opt("Items", "Base.Katana")
     if raw ~= cacheKey then
         cacheKey, cacheSet = raw, {}
-        for t in string.gmatch(raw, "[^;,%s]+") do cacheSet[t] = true end
+        for entry in string.gmatch(raw, "[^;,%s]+") do
+            local t, m = string.match(entry, "^([^=]+)=(%d+)$")
+            cacheSet[t or entry] = tonumber(m) or true
+        end
     end
-    return cacheSet[item:getFullType()] == true
+    return cacheSet
+end
+
+function KT.isTarget(item)
+    if not item or not instanceof(item, "HandWeapon") then return false end
+    return targets()[item:getFullType()] ~= nil
+end
+
+function KT.duration(item)
+    local v = item and targets()[item:getFullType()]
+    return type(v) == "number" and v or KT.opt("DurationMinutes", 30)
 end
 
 function KT.key(item) return tostring(item:getID()) end

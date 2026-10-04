@@ -122,7 +122,7 @@ local function temper(player, args)
     end
 
     D()[id] = {
-        untilT = now + KT.opt("DurationMinutes", 30) / 60,
+        untilT = now + KT.duration(weapon) / 60,
         stress = math.min(2, stress + 1),
         stressT = now,
     }
