@@ -102,6 +102,7 @@ function KT.hasMask(player)
 end
 
 function KT.applyHattoriStats(item)
+    pcall(function() item:setTooltip("Tooltip_KT_Hattori") end) -- quote shown in the item tooltip
     local si = item:getScriptItem()
     local dp, cp = KT.opt("HattoriDamagePercent", 150) / 100, KT.opt("HattoriConditionPercent", 200) / 100
     pcall(function()

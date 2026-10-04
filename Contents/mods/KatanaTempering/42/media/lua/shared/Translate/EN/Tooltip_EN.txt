@@ -1,0 +1,3 @@
+Tooltip_EN = {
+    Tooltip_KT_Hattori = "\"I can tell you with no ego, this is my finest sword. If on your journey you should encounter God, God will be cut.\"",
+}
