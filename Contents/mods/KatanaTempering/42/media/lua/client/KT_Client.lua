@@ -27,7 +27,7 @@ local function startTemper(player, weapon)
     if not torch then return end
     local stress = KT.stress(KT.cache[weapon:getID()], KT.now())
     if stress > 0.001 then
-        local chance = math.floor(KT.breakChance(stress, KT.weldLevel(player)) + 0.5)
+        local chance = math.floor(KT.breakChance(stress, player) + 0.5)
         local w, h = 380, 150
         local m = ISModalDialog:new(getCore():getScreenWidth() / 2 - w / 2, getCore():getScreenHeight() / 2 - h / 2, w, h,
             getText("UI_KT_Confirm", chance), true, nil, onConfirm, player:getPlayerNum(), player, weapon, torch)
@@ -56,11 +56,11 @@ Events.OnFillInventoryObjectContextMenu.Add(function(playerNum, context, items)
     if left > 0 then lines[#lines + 1] = getText("UI_KT_Tempered", math.ceil(left)) end
     local stress = KT.stress(e, now)
     if stress > 0.001 then
-        lines[#lines + 1] = getText("UI_KT_Stress", math.floor(stress * 100 + 0.5), math.floor(KT.breakChance(stress, KT.weldLevel(player)) + 0.5))
+        lines[#lines + 1] = getText("UI_KT_Stress", math.floor(stress * 100 + 0.5), math.floor(KT.breakChance(stress, player) + 0.5))
     end
     if not findTorch(player) then ok = false; lines[#lines + 1] = getText("UI_KT_NoTorch") end
-    local need = KT.opt("WeldingSkillRequired", 1)
-    if KT.weldLevel(player) < need then ok = false; lines[#lines + 1] = getText("UI_KT_NoSkill", need) end
+    local skillOk, rm, rt, rw = KT.meetsSkills(player)
+    if not skillOk then ok = false; lines[#lines + 1] = getText("UI_KT_NoSkill", rm, rt, rw) end
     if KT.opt("RequireWeldingMask", false) and not KT.hasMask(player) then ok = false; lines[#lines + 1] = getText("UI_KT_NoMask") end
     tip.description = table.concat(lines, " <LINE> ")
     opt.toolTip = tip
