@@ -185,6 +185,7 @@ end)
 
 -- extremely rare: a katana generated in a container may become the Hattori blade
 Events.OnFillContainer.Add(function(room, ctype, container)
+    if not KT.opt("HattoriEnabled", false) then return end -- default off: loot tables untouched
     local chance = KT.opt("HattoriChancePercent", 2)
     if chance <= 0 or not container then return end
     local items = container:getItems()
