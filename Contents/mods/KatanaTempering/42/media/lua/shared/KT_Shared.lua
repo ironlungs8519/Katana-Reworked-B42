@@ -36,14 +36,23 @@ function KT.remainingMinutes(e, now)
     return math.max(0, (e.untilT - now) * 60)
 end
 
-function KT.breakChance(stress, weldLevel)
-    local c = stress * KT.opt("EarlyReheatBreakChance", 25) * (1 - 0.05 * (weldLevel or 0))
-    return math.max(0, math.min(100, c))
+function KT.skills(player)
+    local function lvl(perk) local ok, v = pcall(function() return player:getPerkLevel(perk) end) return ok and v or 0 end
+    return lvl(Perks.Mechanics), lvl(Perks.Maintenance), lvl(Perks.MetalWelding)
 end
 
-function KT.weldLevel(player)
-    local ok, v = pcall(function() return player:getPerkLevel(Perks.MetalWelding) end)
-    return ok and v or 0
+-- returns ok, mechReq, maintReq, weldReq
+function KT.meetsSkills(player)
+    local m, t, w = KT.skills(player)
+    local rm, rt, rw = KT.opt("MechanicsRequired", 2), KT.opt("MaintenanceRequired", 5), KT.opt("WeldingSkillRequired", 0)
+    return (m >= rm and t >= rt and w >= rw), rm, rt, rw
+end
+
+-- crack chance (%), reduced 3% per combined Mechanics+Maintenance+Welding level (max -75%)
+function KT.breakChance(stress, player)
+    local m, t, w = KT.skills(player)
+    local c = stress * KT.opt("EarlyReheatBreakChance", 25) * (1 - math.min(0.75, 0.03 * (m + t + w)))
+    return math.max(0, math.min(100, c))
 end
 
 function KT.hasMask(player)

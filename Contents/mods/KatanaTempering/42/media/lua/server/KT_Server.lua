@@ -95,8 +95,7 @@ local function temper(player, args)
     started[player:getUsername()] = nil
     if not t0 or getTimestampMs() - t0 < 2000 then return result(player, "denied") end
 
-    local level = KT.weldLevel(player)
-    if level < KT.opt("WeldingSkillRequired", 1) then return result(player, "denied") end
+    if not KT.meetsSkills(player) then return result(player, "denied") end
     if KT.opt("RequireWeldingMask", false) and not KT.hasMask(player) then return result(player, "denied") end
     local units = KT.opt("TorchUnitsPerUse", 1)
     if units > 0 and (torch:getCurrentUses() or 0) < units then return result(player, "denied") end
@@ -110,7 +109,7 @@ local function temper(player, args)
     local status = "ok"
 
     if stress > 0.001 then
-        if ZombRandFloat(0, 100) < KT.breakChance(stress, level) then
+        if ZombRandFloat(0, 100) < KT.breakChance(stress, player) then
             weapon:setCondition(0)
             if weapon:hasSharpness() then weapon:setSharpness(0) end
             D()[id] = nil; snaps[id] = nil
