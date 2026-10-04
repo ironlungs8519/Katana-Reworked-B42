@@ -29,6 +29,18 @@ function KT.isTarget(item)
     return targets()[item:getFullType()] ~= nil
 end
 
+-- weapons that never lose sharpness (condition still follows the normal rules)
+local immKey, immSet
+function KT.isSharpImmune(item)
+    if not item or not instanceof(item, "HandWeapon") then return false end
+    local raw = KT.opt("SharpnessImmuneItems", "")
+    if raw ~= immKey then
+        immKey, immSet = raw, {}
+        for t in string.gmatch(raw, "[^;,%s]+") do immSet[t] = true end
+    end
+    return immSet[item:getFullType()] == true
+end
+
 function KT.duration(item)
     local v = item and targets()[item:getFullType()]
     return type(v) == "number" and v or KT.opt("DurationMinutes", 30)

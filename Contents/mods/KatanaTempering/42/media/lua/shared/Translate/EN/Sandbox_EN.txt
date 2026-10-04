@@ -1,6 +1,7 @@
 Sandbox_EN = {
     Sandbox_KatanaTempering = "Katana Tempering",
     Sandbox_KatanaTempering_Enabled = "Enable tempering system",
+    Sandbox_KatanaTempering_SharpnessImmuneItems = "Weapons that never lose sharpness (full types separated by ;)",
     Sandbox_KatanaTempering_Items = "Eligible weapons (full types separated by ;, optional =minutes e.g. Base.Katana;Mod.Blade=45)",
     Sandbox_KatanaTempering_DurationMinutes = "Tempering duration (in-game minutes)",
     Sandbox_KatanaTempering_HardenedWearPercent = "Wear taken while tempered (%)",

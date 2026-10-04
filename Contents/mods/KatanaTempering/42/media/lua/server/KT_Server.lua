@@ -54,21 +54,23 @@ end
 
 local function guard(player)
     local item = player:getPrimaryHandItem()
-    if not KT.isTarget(item) then return end
+    local immune = KT.isSharpImmune(item)
+    if not (KT.isTarget(item) or immune) then return end
     local id = KT.key(item)
     local now = KT.now()
     local e = D()[id]
-    local pct = (e and e.untilT and e.untilT > now) and KT.opt("HardenedWearPercent", 0) or KT.opt("BaseWearPercent", 100)
+    local pct = KT.isTarget(item) and ((e and e.untilT and e.untilT > now) and KT.opt("HardenedWearPercent", 0) or KT.opt("BaseWearPercent", 100)) or 100
+    local sharpPct = immune and 0 or pct
 
     local cur = { cond = item:getCondition(), sharp = item:hasSharpness() and item:getSharpness() or nil, head = item:hasHeadCondition() and item:getHeadCondition() or nil }
     local snap = snaps[id]
-    if snap and pct < 100 then
+    if snap and (pct < 100 or sharpPct < 100) then
         local changed = false
         if cur.sharp and snap.sharp and cur.sharp < snap.sharp then
-            cur.sharp = snap.sharp - scaled(snap.sharp - cur.sharp, pct, false)
+            cur.sharp = snap.sharp - scaled(snap.sharp - cur.sharp, sharpPct, false)
             item:setSharpness(cur.sharp); changed = true
         end
-        if KT.opt("ProtectCondition", true) then
+        if pct < 100 and KT.opt("ProtectCondition", true) then
             if cur.cond < snap.cond then
                 cur.cond = snap.cond - scaled(snap.cond - cur.cond, pct, true)
                 item:setCondition(cur.cond); changed = true
