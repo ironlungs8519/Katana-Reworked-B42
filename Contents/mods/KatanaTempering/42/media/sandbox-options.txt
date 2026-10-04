@@ -1,0 +1,14 @@
+VERSION = 1,
+
+option KatanaTempering.Enabled { type = boolean, default = true, page = KatanaTempering, }
+option KatanaTempering.Items { type = string, default = Base.Katana, page = KatanaTempering, }
+option KatanaTempering.DurationMinutes { type = integer, min = 1, max = 1440, default = 30, page = KatanaTempering, }
+option KatanaTempering.HardenedWearPercent { type = integer, min = 0, max = 100, default = 0, page = KatanaTempering, }
+option KatanaTempering.BaseWearPercent { type = integer, min = 1, max = 100, default = 100, page = KatanaTempering, }
+option KatanaTempering.ProtectCondition { type = boolean, default = true, page = KatanaTempering, }
+option KatanaTempering.TorchUnitsPerUse { type = integer, min = 0, max = 10, default = 1, page = KatanaTempering, }
+option KatanaTempering.WeldingSkillRequired { type = integer, min = 0, max = 10, default = 1, page = KatanaTempering, }
+option KatanaTempering.RequireWeldingMask { type = boolean, default = false, page = KatanaTempering, }
+option KatanaTempering.CooldownMinutes { type = integer, min = 0, max = 1440, default = 120, page = KatanaTempering, }
+option KatanaTempering.EarlyReheatBreakChance { type = integer, min = 0, max = 100, default = 25, page = KatanaTempering, }
+option KatanaTempering.EarlyReheatDamagePercent { type = integer, min = 0, max = 100, default = 15, page = KatanaTempering, }

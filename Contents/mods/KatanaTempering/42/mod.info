@@ -1,0 +1,6 @@
+name=Katana Tempering
+id=KatanaTempering
+author=ironlungs8519
+modversion=0.1.0
+versionMin=42.0.0
+description=Re-temper your katana with a blowtorch. A tempered blade takes (almost) no sharpness/condition wear for a while. Re-heating too soon risks cracking it. Server authoritative, fully sandbox configurable.

@@ -1,0 +1,12 @@
+UI_EN = {
+    UI_KT_Tempered = "Tempered: %1 min left",
+    UI_KT_Stress = "Heat stress %1% - reheating now risks cracking (%2%)",
+    UI_KT_NoTorch = "Needs a blowtorch with fuel",
+    UI_KT_NoSkill = "Needs Metalworking level %1",
+    UI_KT_NoMask = "Needs a worn welding mask",
+    UI_KT_Confirm = "The blade is still hot from the last tempering. Reheating now has a %1% chance to crack it and will damage it. Continue?",
+    UI_KT_ok = "Blade tempered.",
+    UI_KT_damaged = "Blade tempered, but the reheat scorched it.",
+    UI_KT_cracked = "The blade cracked!",
+    UI_KT_denied = "Can't temper that right now.",
+}
