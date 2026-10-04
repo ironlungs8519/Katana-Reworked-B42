@@ -181,9 +181,29 @@ Events.OnClientCommand.Add(function(module, command, player, args)
     end
 end)
 
+-- Preventative Maintenance 2: wrap its repair/sharpen so the touched item is re-baselined deterministically
+-- (its own changes can never be mistaken for combat wear). Done lazily: load order of the two mods is unknown.
+local pm2Wrapped = false
+local function wrapPM2()
+    if pm2Wrapped or not PMTwoServer or not PMTwoServer.DoSharpen or not PMTwoServer.DoRepair then return end
+    pm2Wrapped = true
+    local sharpen, repair = PMTwoServer.DoSharpen, PMTwoServer.DoRepair
+    PMTwoServer.DoSharpen = function(player, item, ...)
+        local ok, err = pcall(sharpen, player, item, ...)
+        if item then snaps[KT.key(item)] = nil end
+        if not ok then error(err, 0) end
+    end
+    PMTwoServer.DoRepair = function(player, item, ...)
+        local ok, err = pcall(repair, player, item, ...)
+        if item then snaps[KT.key(item)] = nil end
+        if not ok then error(err, 0) end
+    end
+end
+
 Events.OnTick.Add(function()
     tick = tick + 1
     if tick % 5 == 0 then
+        wrapPM2()
         for _, p in ipairs(players()) do guard(p) end
     end
     if tick % 3600 == 0 then -- prune spent entries
