@@ -5,7 +5,7 @@
 - Tempered window (default 30 in-game min): wear scaled to `HardenedWearPercent` (default 0) for sharpness, condition, head condition.
 - Optional global slowdown while untempered (`BaseWearPercent`).
 - Heat stress + early reheat: confirm dialog, crack chance, scorch damage.
-- Requirements: Mechanics 2, Maintenance 5 (defaults), optional Welding + mask, torch fuel per use.
+- Requirements: Mechanics 2, Maintenance 5, Welding 1 (defaults) + mask, torch fuel per use.
 - Server authority: state in server ModData; server validates every request and reconciles wear every 5 ticks.
 - Torch sound, sparks (visual), draggable HUD panel with saved position.
 

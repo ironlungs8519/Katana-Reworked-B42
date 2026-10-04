@@ -44,7 +44,7 @@ end
 -- returns ok, mechReq, maintReq, weldReq
 function KT.meetsSkills(player)
     local m, t, w = KT.skills(player)
-    local rm, rt, rw = KT.opt("MechanicsRequired", 2), KT.opt("MaintenanceRequired", 5), KT.opt("WeldingSkillRequired", 0)
+    local rm, rt, rw = KT.opt("MechanicsRequired", 2), KT.opt("MaintenanceRequired", 5), KT.opt("WeldingSkillRequired", 1)
     return (m >= rm and t >= rt and w >= rw), rm, rt, rw
 end
 

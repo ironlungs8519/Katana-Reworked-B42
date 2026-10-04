@@ -9,7 +9,7 @@ option KatanaTempering.ProtectCondition { type = boolean, default = true, page =
 option KatanaTempering.TorchUnitsPerUse { type = integer, min = 0, max = 10, default = 1, page = KatanaTempering, }
 option KatanaTempering.MechanicsRequired { type = integer, min = 0, max = 10, default = 2, page = KatanaTempering, }
 option KatanaTempering.MaintenanceRequired { type = integer, min = 0, max = 10, default = 5, page = KatanaTempering, }
-option KatanaTempering.WeldingSkillRequired { type = integer, min = 0, max = 10, default = 0, page = KatanaTempering, }
+option KatanaTempering.WeldingSkillRequired { type = integer, min = 0, max = 10, default = 1, page = KatanaTempering, }
 option KatanaTempering.RequireWeldingMask { type = boolean, default = false, page = KatanaTempering, }
 option KatanaTempering.CooldownMinutes { type = integer, min = 0, max = 1440, default = 120, page = KatanaTempering, }
 option KatanaTempering.EarlyReheatBreakChance { type = integer, min = 0, max = 100, default = 25, page = KatanaTempering, }
