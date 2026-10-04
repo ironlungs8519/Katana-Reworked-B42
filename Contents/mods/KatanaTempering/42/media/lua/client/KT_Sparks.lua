@@ -48,7 +48,6 @@ function ui:render()
         local sx = IsoUtils.XToScreenExact(s.x, s.y, s.z, pn)
         local sy = IsoUtils.YToScreenExact(s.x, s.y, s.z, pn)
         local f = s.age / s.life
-        self:drawRect(sx, sy, 2, 2, 1 - f * 0.6, 1, 0.9 - f * 0.9, 0.4 * 0 + (1 - f))
         self:drawRect(sx, sy, 2, 2, 1 - f * 0.6, 1 - f * 0.6, 0.85 - f * 0.85, 1 - f)
     end
 end
