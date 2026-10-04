@@ -5,4 +5,4 @@ Reheating before heat stress has cooled risks cracking the blade (condition -> 0
 
 All state lives in server ModData; the client only requests actions. Everything is under Sandbox Options > Katana Tempering.
 
-Known to verify in real MP: wear is applied by the client, so the server reconciles it every 5 ticks (`KT_Server.lua`). Anim name `BlowTorch` and the spark projection are best-effort.
+Known to verify in real MP: wear is applied by the client, so the server reconciles it every 5 ticks (`KT_Server.lua`). Animation `KT_Temper` (original, built by tools/build_temper_anim.py; AnimSet XML unverified in-game) and the spark projection are best-effort.

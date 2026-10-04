@@ -9,7 +9,7 @@ function KTTemperAction:isValid()
 end
 
 function KTTemperAction:start()
-    self:setActionAnim("BlowTorch")
+    self:setActionAnim("KTTemper")
     self:setOverrideHandModels(self.torch, nil)
     self.sound = KT.playTorch(self.character)
     KTSparks.add(self.character, self.maxTime)
