@@ -60,13 +60,13 @@ local function guard(player)
     local e = D()[id]
     local pct = (e and e.untilT and e.untilT > now) and KT.opt("HardenedWearPercent", 0) or KT.opt("BaseWearPercent", 100)
 
-    local cur = { cond = item:getCondition(), sharp = call(item, "getSharpness"), head = call(item, "getHeadCondition") }
+    local cur = { cond = item:getCondition(), sharp = item:hasSharpness() and item:getSharpness() or nil, head = item:hasHeadCondition() and item:getHeadCondition() or nil }
     local snap = snaps[id]
     if snap and pct < 100 then
         local changed = false
         if cur.sharp and snap.sharp and cur.sharp < snap.sharp then
             cur.sharp = snap.sharp - scaled(snap.sharp - cur.sharp, pct, false)
-            call(item, "setSharpness", cur.sharp); changed = true
+            item:setSharpness(cur.sharp); changed = true
         end
         if KT.opt("ProtectCondition", true) then
             if cur.cond < snap.cond then
@@ -75,7 +75,7 @@ local function guard(player)
             end
             if cur.head and snap.head and cur.head < snap.head then
                 cur.head = snap.head - scaled(snap.head - cur.head, pct, true)
-                call(item, "setHeadCondition", cur.head); changed = true
+                item:setHeadCondition(cur.head); changed = true
             end
         end
         if changed then sync(player, item) end
@@ -112,7 +112,7 @@ local function temper(player, args)
     if stress > 0.001 then
         if ZombRandFloat(0, 100) < KT.breakChance(stress, level) then
             weapon:setCondition(0)
-            call(weapon, "setSharpness", 0)
+            if weapon:hasSharpness() then weapon:setSharpness(0) end
             D()[id] = nil; snaps[id] = nil
             sync(player, weapon); sendState(player, weapon)
             return result(player, "cracked")
