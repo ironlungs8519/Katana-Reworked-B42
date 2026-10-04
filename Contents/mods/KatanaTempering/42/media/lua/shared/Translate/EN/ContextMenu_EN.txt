@@ -1,3 +1,4 @@
 ContextMenu_EN = {
     ContextMenu_KT_Temper = "Temper Blade (Blowtorch)",
+    ContextMenu_KT_MakeHattori = "[Admin] Make Hattori Hanzo's Blade",
 }

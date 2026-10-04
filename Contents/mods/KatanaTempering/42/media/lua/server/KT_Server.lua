@@ -52,8 +52,23 @@ local function scaled(drop, pct, isInt)
     return whole
 end
 
+local applied = {}
+local function makeHattori(player, item)
+    local md = item:getModData()
+    md.KT_Hattori = true
+    item:setName(getText("ItemName_KT_Hattori"))
+    pcall(function() item:setCustomName(true) end)
+    KT.applyHattoriStats(item)
+    applied[KT.key(item)] = true
+    if player then sync(player, item) end
+end
+
 local function guard(player)
     local item = player:getPrimaryHandItem()
+    if item and KT.isHattori(item) and not applied[KT.key(item)] then -- stats are re-applied each session
+        applied[KT.key(item)] = true
+        KT.applyHattoriStats(item); sync(player, item)
+    end
     local immune = KT.isSharpImmune(item)
     if not (KT.isTarget(item) or immune) then return end
     local id = KT.key(item)
@@ -111,7 +126,7 @@ local function temper(player, args)
     local status = "ok"
 
     if stress > 0.001 then
-        if ZombRandFloat(0, 100) < KT.breakChance(stress, player) then
+        if ZombRandFloat(0, 100) < KT.breakChance(stress, player, weapon) then
             weapon:setCondition(0)
             if weapon:hasSharpness() then weapon:setSharpness(0) end
             D()[id] = nil; snaps[id] = nil
@@ -143,6 +158,10 @@ Events.OnClientCommand.Add(function(module, command, player, args)
         if last and ms - last < 1500 then return end
         started[player:getUsername()] = ms
         sendServerCommand(KT.MODULE, "fx", { pid = player:getOnlineID(), x = player:getX(), y = player:getY(), z = player:getZ() })
+    elseif command == "makeHattori" then -- admin / debug only
+        local item = player:getInventory():getItemById(args.id or -1)
+        local admin = (not isServer() and isDebugEnabled()) or (player.getAccessLevel and player:getAccessLevel() == "Admin")
+        if admin and item and item:getFullType() == "Base.Katana" then makeHattori(player, item) end
     elseif command == "temper" then
         temper(player, args)
     elseif command == "query" then
@@ -160,6 +179,19 @@ Events.OnTick.Add(function()
         local now, d = KT.now(), D()
         for k, e in pairs(d) do
             if type(e) == "table" and (e.untilT or 0) < now and KT.stress(e, now) <= 0 then d[k] = nil end
+        end
+    end
+end)
+
+-- extremely rare: a katana generated in a container may become the Hattori blade
+Events.OnFillContainer.Add(function(room, ctype, container)
+    local chance = KT.opt("HattoriChancePercent", 2)
+    if chance <= 0 or not container then return end
+    local items = container:getItems()
+    for i = 0, items:size() - 1 do
+        local it = items:get(i)
+        if it:getFullType() == "Base.Katana" and not KT.isHattori(it) and ZombRandFloat(0, 100) < chance then
+            makeHattori(nil, it)
         end
     end
 end)

@@ -2,6 +2,11 @@ VERSION = 1,
 
 option KatanaTempering.Enabled { type = boolean, default = true, page = KatanaTempering, }
 option KatanaTempering.SharpnessImmuneItems { type = string, default = , page = KatanaTempering, }
+option KatanaTempering.HattoriChancePercent { type = integer, min = 0, max = 100, default = 2, page = KatanaTempering, }
+option KatanaTempering.HattoriDamagePercent { type = integer, min = 100, max = 400, default = 150, page = KatanaTempering, }
+option KatanaTempering.HattoriConditionPercent { type = integer, min = 100, max = 500, default = 200, page = KatanaTempering, }
+option KatanaTempering.HattoriDurationPercent { type = integer, min = 100, max = 500, default = 200, page = KatanaTempering, }
+option KatanaTempering.HattoriSharpnessImmune { type = boolean, default = true, page = KatanaTempering, }
 option KatanaTempering.Items { type = string, default = Base.Katana, page = KatanaTempering, }
 option KatanaTempering.DurationMinutes { type = integer, min = 1, max = 1440, default = 30, page = KatanaTempering, }
 option KatanaTempering.HardenedWearPercent { type = integer, min = 0, max = 100, default = 0, page = KatanaTempering, }
