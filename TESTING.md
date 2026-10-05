@@ -17,3 +17,7 @@ SP first, then host-and-join, then dedicated server (2 clients).
 13. Provoke a PM2 fumble (-10% condition) and a file/whetstone sharpen (-1 condition chance): the loss must stick, including after unequip/re-equip.
 14. Swing at zombies after a PM2 repair: tempered wear is still prevented; untempered wear is still normal.
 15. Hattori blade: PM2 repairs clamp to its doubled max condition.
+
+## Regression (0.4.4)
+16. Dedicated server starts with the mod enabled: no `ProcessedAiScene.applyToAnimation ... skeleton is null`, "LOADING ASSETS: FINISH" reached.
+    (0.4.0-0.4.3 shipped an animation FBX with no skinned mesh and no keyframes, which crashed server asset loading. The build script now embeds a dummy skinned mesh and bakes the animation.)

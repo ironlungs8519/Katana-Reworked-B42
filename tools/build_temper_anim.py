@@ -13,6 +13,23 @@ arm = bpy.data.objects['Bip01']
 bpy.context.view_layer.objects.active = arm
 for o in list(bpy.data.objects):          # keep rig + prop empties only
     if o.type == 'MESH': bpy.data.objects.remove(o, do_unlink=True)
+# The game derives the animation's skeleton from a skinned mesh inside the FBX ("No such mesh null" / NPE
+# "this.skeleton is null" otherwise). Add a tiny dummy mesh with one vertex weighted 100% to each bone.
+import bmesh
+bpy.ops.object.mode_set(mode='OBJECT')
+bm = bmesh.new()
+bones = [b.name for b in arm.data.bones]
+verts = [bm.verts.new((0.0001 * (i % 6), 0.0001 * (i // 6), 0.0)) for i in range(len(bones))]
+for i in range(0, len(verts) - 2, 1):
+    try: bm.faces.new((verts[i], verts[i + 1], verts[i + 2]))
+    except ValueError: pass
+dmesh = bpy.data.meshes.new("KT_SkelMesh"); bm.to_mesh(dmesh); bm.free()
+dobj = bpy.data.objects.new("KT_SkelMesh", dmesh); bpy.context.scene.collection.objects.link(dobj)
+for i, name in enumerate(bones):
+    vg = dobj.vertex_groups.new(name=name); vg.add([i], 1.0, 'REPLACE')
+mod = dobj.modifiers.new("Armature", 'ARMATURE'); mod.object = arm
+dobj.parent = arm
+bpy.context.view_layer.objects.active = arm
 bpy.ops.object.mode_set(mode='POSE')
 
 FPS, N = 30, 90                              # 3 s loop
@@ -70,10 +87,15 @@ for ax, (i, j), title in ((axs[0], (0, 1), "front (X,Y)"), (axs[1], (2, 1), "sid
     ax.set_aspect('equal'); ax.set_title(title); ax.grid(alpha=.3)
 plt.savefig(os.path.join(out, "preview.png"), dpi=80)
 
+ad = arm.animation_data
+try:
+    print("slot:", ad.action_slot, [sl.identifier for sl in ad.action.slots], "layers", len(ad.action.layers))
+    if ad.action_slot is None and len(ad.action.slots): ad.action_slot = ad.action.slots[0]
+except Exception as e: print("slot err", e)
+print("KT action:", ad.action.name if ad and ad.action else None, "frames", ad.action.frame_range[:] if ad and ad.action else None)
 bpy.ops.object.mode_set(mode='OBJECT')
 arm.select_set(True)
 bpy.ops.export_scene.fbx(filepath=os.path.join(out, "KT_Temper.fbx"), use_selection=False,
-    object_types={'ARMATURE', 'EMPTY'}, add_leaf_bones=False, bake_anim=True,
-    bake_anim_use_all_actions=False, bake_anim_simplify_factor=0.0, apply_scale_options='FBX_SCALE_NONE',
+    object_types={'ARMATURE', 'EMPTY', 'MESH'}, add_leaf_bones=False, bake_anim=True, bake_anim_use_nla_strips=False, bake_anim_use_all_actions=False, bake_anim_force_startend_keying=True, bake_anim_use_all_bones=True, bake_anim_simplify_factor=0.0, apply_scale_options='FBX_SCALE_NONE',
     axis_forward='-Z', axis_up='Y')
 os._exit(0)
