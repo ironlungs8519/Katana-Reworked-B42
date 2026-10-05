@@ -1,0 +1,7 @@
+name=Katana Tempering - Animation (optional, experimental)
+id=KatanaTemperingAnim
+author=ironlungs8519
+modversion=0.1.0
+versionMin=42.0.0
+require=KatanaTempering
+description=Optional torch-tempering animation for Katana Tempering. Experimental: if the game logs animation/skeleton errors or the server fails to start, disable this mod; Katana Tempering works fine without it.

@@ -9,7 +9,9 @@ function KTTemperAction:isValid()
 end
 
 function KTTemperAction:start()
-    self:setActionAnim("KTTemper")
+    -- custom animation lives in the optional KatanaTemperingAnim mod; never reference it unless it is enabled
+    local ok, active = pcall(function() return getActivatedMods():contains("KatanaTemperingAnim") end)
+    if ok and active then self:setActionAnim("KTTemper") end
     self:setOverrideHandModels(self.torch, nil)
     self.sound = KT.playTorch(self.character)
     KTSparks.add(self.character, self.maxTime)
